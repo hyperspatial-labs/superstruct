@@ -1,12 +1,12 @@
 
 # val 1
-superstructd genesis add-genesis-account xpz1c6ch3zqxkkcsqs0craj0mclvqxkfc6ua30xvte 1000000000stake,1000000000uxpz
+superstructd genesis add-genesis-account xpz1mk5ldkmh2089fhhau6xe026pz703n3vrl3t9m8 1000000000stake,1000000000uxpz
 
 # val 2
-superstructd genesis add-genesis-account xpz1t3nqafmt8zhuvx5zeetnujpknsp42rzkr5jajp 1000000000stake,2000000000uxpz
+superstructd genesis add-genesis-account xpz1uyx2vwn5jfyg299nz2rcgdgax92mcza5wz64tq 1000000000stake,2000000000uxpz
 
 # val 3
-superstructd genesis add-genesis-account xpz1sgcrhslczzs3s3nx6m5dnvvc0vyuggjdrqax0j 1000000000stake,3000000000uxpz
+superstructd genesis add-genesis-account xpz1n8zadvwxyv2u3l59xdnq48tdjf2htk6afrfff2 1000000000stake,3000000000uxpz
                                                                                     
 
 # superstructd tx distribution withdraw-rewards xpz1c6ch3zqxkkcsqs0craj0mclvqxkfc6ua30xvte --from validator1 --chain-id hyper-1
