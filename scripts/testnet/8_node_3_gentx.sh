@@ -1,4 +1,3 @@
 #!/bin/bash
 
-cp genesis.json ~/.superstructd/config/ && superstructd gentx validator2 600000000stake --chain-id testnet-1
-
+cp ./networks/testnet-1/genesis.json ~/.superstructd/config/ && superstructd genesis gentx validator3 800000000stake --chain-id hyper-1
