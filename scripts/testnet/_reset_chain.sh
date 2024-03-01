@@ -1,3 +1,3 @@
 #!/bin/bash
 
-hyperspaced tendermint unsafe-reset-all
+superstructd tendermint unsafe-reset-all
