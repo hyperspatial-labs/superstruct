@@ -144,7 +144,7 @@ import (
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 
 	tokenfactory "github.com/hyperspatial-labs/superstruct/x/tokenfactory"
-	// tokenbindings "github.com/hyperspatial-labs/superstruct/x/tokenfactory/bindings"
+	tokenbindings "github.com/hyperspatial-labs/superstruct/x/tokenfactory/bindings"
 	tokenfactorykeeper "github.com/hyperspatial-labs/superstruct/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/hyperspatial-labs/superstruct/x/tokenfactory/types"
 )
@@ -602,9 +602,8 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// tfOpts := tokenbindings.RegisterCustomPlugins(&app.BankKeeper, &app.TokenFactoryKeeper)
-	// wasmOpts = append(wasmOpts, tfOpts...)
-	wasmOpts = append(wasmOpts)
+	tfOpts := tokenbindings.RegisterCustomPlugins(app.BankKeeper, &app.TokenFactoryKeeper)
+	wasmOpts = append(wasmOpts, tfOpts...)
 
 	wasmDir := filepath.Join(homePath, "data")
 
