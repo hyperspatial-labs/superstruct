@@ -1,1 +1,1 @@
-sed -i.bak 's/minimum-gas-prices =.*/minimum-gas-prices = "0uxpz"/' $HOME/.superstructd/config/app.toml
+sed -i.bak 's/minimum-gas-prices =.*/minimum-gas-prices = "100uxpz"/' $HOME/.superstructd/config/app.toml
