@@ -6,8 +6,8 @@ superstructd genesis add-genesis-account xpz1c6ch3zqxkkcsqs0craj0mclvqxkfc6ua30x
 superstructd genesis add-genesis-account xpz1t3nqafmt8zhuvx5zeetnujpknsp42rzkr5jajp 1000000000stake,2000000000uxpz
 
 # val 3
-superstructd genesis add-genesis-account xpz13lmqfydemnu0x2y8xqwr6jehw9ct4rumumze8g 1000000000stake,3000000000uxpz
-
+superstructd genesis add-genesis-account xpz1sgcrhslczzs3s3nx6m5dnvvc0vyuggjdrqax0j 1000000000stake,3000000000uxpz
+                                                                                    
 
 # superstructd tx distribution withdraw-rewards xpz1c6ch3zqxkkcsqs0craj0mclvqxkfc6ua30xvte --from validator1 --chain-id hyper-1
 

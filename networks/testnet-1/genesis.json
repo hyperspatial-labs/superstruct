@@ -32,7 +32,29 @@
         "sig_verify_cost_ed25519": "590",
         "sig_verify_cost_secp256k1": "1000"
       },
-      "accounts": []
+      "accounts": [
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "xpz1c6ch3zqxkkcsqs0craj0mclvqxkfc6ua30xvte",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "xpz1t3nqafmt8zhuvx5zeetnujpknsp42rzkr5jajp",
+          "pub_key": null,
+          "account_number": "1",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "xpz1sgcrhslczzs3s3nx6m5dnvvc0vyuggjdrqax0j",
+          "pub_key": null,
+          "account_number": "2",
+          "sequence": "0"
+        }
+      ]
     },
     "authz": {
       "authorization": []
@@ -42,8 +64,57 @@
         "send_enabled": [],
         "default_send_enabled": true
       },
-      "balances": [],
-      "supply": [],
+      "balances": [
+        {
+          "address": "xpz1t3nqafmt8zhuvx5zeetnujpknsp42rzkr5jajp",
+          "coins": [
+            {
+              "denom": "stake",
+              "amount": "1000000000"
+            },
+            {
+              "denom": "uxpz",
+              "amount": "2000000000"
+            }
+          ]
+        },
+        {
+          "address": "xpz1sgcrhslczzs3s3nx6m5dnvvc0vyuggjdrqax0j",
+          "coins": [
+            {
+              "denom": "stake",
+              "amount": "1000000000"
+            },
+            {
+              "denom": "uxpz",
+              "amount": "3000000000"
+            }
+          ]
+        },
+        {
+          "address": "xpz1c6ch3zqxkkcsqs0craj0mclvqxkfc6ua30xvte",
+          "coins": [
+            {
+              "denom": "stake",
+              "amount": "1000000000"
+            },
+            {
+              "denom": "uxpz",
+              "amount": "1000000000"
+            }
+          ]
+        }
+      ],
+      "supply": [
+        {
+          "denom": "stake",
+          "amount": "3000000000"
+        },
+        {
+          "denom": "uxpz",
+          "amount": "6000000000"
+        }
+      ],
       "denom_metadata": [],
       "send_enabled": []
     },
