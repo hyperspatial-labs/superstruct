@@ -1,3 +1,3 @@
 #!/bin/bash
 
-# superstructd genesis gentx validator1 900000000stake --chain-id=hyper-1
+superstructd genesis gentx validator1 500000000stake --chain-id=hyper-1
