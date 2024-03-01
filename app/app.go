@@ -43,7 +43,7 @@ import (
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
-
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
 	sdkbanktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/capability"
@@ -122,9 +122,8 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
-	"github.com/terra-money/alliance/custom/bank"
-	bankkeeper "github.com/terra-money/alliance/custom/bank/keeper"
-
+	// bankkeeper "github.com/terra-money/alliance/custom/bank/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -134,10 +133,10 @@ import (
 	feeburnmodulekeeper "github.com/hyperspatial-labs/superstruct/x/feeburn/keeper"
 	feeburnmoduletypes "github.com/hyperspatial-labs/superstruct/x/feeburn/types"
 
-	alliancemodule "github.com/terra-money/alliance/x/alliance"
-	alliancemoduleclient "github.com/terra-money/alliance/x/alliance/client"
-	alliancemodulekeeper "github.com/terra-money/alliance/x/alliance/keeper"
-	alliancemoduletypes "github.com/terra-money/alliance/x/alliance/types"
+	// alliancemodule "github.com/terra-money/alliance/x/alliance"
+	// alliancemoduleclient "github.com/terra-money/alliance/x/alliance/client"
+	// alliancemodulekeeper "github.com/terra-money/alliance/x/alliance/keeper"
+	// alliancemoduletypes "github.com/terra-money/alliance/x/alliance/types"
 
 	_ "github.com/hyperspatial-labs/superstruct/client/docs/statik"
 	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
@@ -145,13 +144,13 @@ import (
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 
 	tokenfactory "github.com/hyperspatial-labs/superstruct/x/tokenfactory"
-	tokenbindings "github.com/hyperspatial-labs/superstruct/x/tokenfactory/bindings"
+	// tokenbindings "github.com/hyperspatial-labs/superstruct/x/tokenfactory/bindings"
 	tokenfactorykeeper "github.com/hyperspatial-labs/superstruct/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/hyperspatial-labs/superstruct/x/tokenfactory/types"
 )
 
 const (
-	Bech32Prefix = "superstruct"
+	Bech32Prefix = "xpz"
 	Name         = "superstruct"
 	UpgradeName  = "v1"
 	NodeDir      = ".superstructd"
@@ -232,9 +231,9 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		upgradeclient.LegacyCancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
 		ibcclientclient.UpgradeProposalHandler,
-		alliancemoduleclient.CreateAllianceProposalHandler,
-		alliancemoduleclient.UpdateAllianceProposalHandler,
-		alliancemoduleclient.DeleteAllianceProposalHandler,
+		// alliancemoduleclient.CreateAllianceProposalHandler,
+		// alliancemoduleclient.UpdateAllianceProposalHandler,
+		// alliancemoduleclient.DeleteAllianceProposalHandler,
 	)
 
 	return govProposalHandlers
@@ -274,7 +273,7 @@ var (
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
 		feeburnmodule.AppModuleBasic{},
-		alliancemodule.AppModuleBasic{},
+		// alliancemodule.AppModuleBasic{},
 		ibchooks.AppModuleBasic{},
 		tokenfactory.AppModuleBasic{},
 	)
@@ -292,8 +291,8 @@ var (
 		ibcfeetypes.ModuleName:              nil,
 		icatypes.ModuleName:                 nil,
 		wasmtypes.ModuleName:                {authtypes.Burner},
-		alliancemoduletypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		alliancemoduletypes.RewardsPoolName: nil,
+		// alliancemoduletypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		// alliancemoduletypes.RewardsPoolName: nil,
 		tokenfactorytypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 	}
 )
@@ -349,7 +348,7 @@ type App struct {
 	wasmKeeper          wasmkeeper.Keeper
 
 	FeeburnKeeper      feeburnmodulekeeper.Keeper
-	AllianceKeeper     alliancemodulekeeper.Keeper
+	// AllianceKeeper     alliancemodulekeeper.Keeper
 	IBCHooksKeeper     ibchookskeeper.Keeper
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
 
@@ -404,7 +403,7 @@ func New(
 		wasmtypes.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
 		feeburnmoduletypes.StoreKey,
-		alliancemoduletypes.StoreKey,
+		// alliancemoduletypes.StoreKey,
 		ibchookstypes.StoreKey,
 		tokenfactorytypes.StoreKey,
 	)
@@ -474,22 +473,22 @@ func New(
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-	app.AllianceKeeper = alliancemodulekeeper.NewKeeper(
-		appCodec,
-		keys[alliancemoduletypes.StoreKey],
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.StakingKeeper,
-		app.DistrKeeper,
-		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	app.BankKeeper.RegisterKeepers(app.AllianceKeeper, app.StakingKeeper)
+	// app.AllianceKeeper = alliancemodulekeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[alliancemoduletypes.StoreKey],
+	// 	app.AccountKeeper,
+	// 	app.BankKeeper,
+	// 	app.StakingKeeper,
+	// 	app.DistrKeeper,
+	// 	authtypes.FeeCollectorName,
+	// 	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	// )
+	// app.BankKeeper.RegisterKeepers(app.StakingKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks(), app.AllianceKeeper.StakingHooks()),
+		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.MsgServiceRouter(), app.AccountKeeper)
@@ -525,8 +524,8 @@ func New(
 	govRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)). // This should be removed. It is still in place to avoid failures of modules that have not yet been upgraded.
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(alliancemoduletypes.RouterKey, alliancemodule.NewAllianceProposalHandler(app.AllianceKeeper))
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+		// AddRoute(alliancemoduletypes.RouterKey, alliancemodule.NewAllianceProposalHandler(app.AllianceKeeper))
 
 	govConfig := govtypes.DefaultConfig()
 	/*
@@ -603,8 +602,9 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	tfOpts := tokenbindings.RegisterCustomPlugins(&app.BankKeeper, &app.TokenFactoryKeeper)
-	wasmOpts = append(wasmOpts, tfOpts...)
+	// tfOpts := tokenbindings.RegisterCustomPlugins(&app.BankKeeper, &app.TokenFactoryKeeper)
+	// wasmOpts = append(wasmOpts, tfOpts...)
+	wasmOpts = append(wasmOpts)
 
 	wasmDir := filepath.Join(homePath, "data")
 
@@ -726,7 +726,7 @@ func New(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		transfer.NewAppModule(app.TransferKeeper),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
-		alliancemodule.NewAppModule(appCodec, app.AllianceKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry, app.GetSubspace(alliancemoduletypes.ModuleName)),
+		// alliancemodule.NewAppModule(appCodec, app.AllianceKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry, app.GetSubspace(alliancemoduletypes.ModuleName)),
 		tokenfactory.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(tokenfactorytypes.ModuleName)),
 	)
 
@@ -749,7 +749,7 @@ func New(
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
 		wasmtypes.ModuleName,
-		alliancemoduletypes.ModuleName,
+		// alliancemoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 	)
 
@@ -768,7 +768,7 @@ func New(
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
 		wasmtypes.ModuleName,
-		alliancemoduletypes.ModuleName,
+		// alliancemoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 	)
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -794,7 +794,7 @@ func New(
 		ibchookstypes.ModuleName,
 		// wasm after ibc transfer
 		wasmtypes.ModuleName,
-		alliancemoduletypes.ModuleName,
+		// alliancemoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -910,7 +910,7 @@ func New(
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		feeburnmodule.NewAppModule(appCodec, app.FeeburnKeeper, app.AccountKeeper, app.BankKeeper),
-		alliancemodule.NewAppModule(appCodec, app.AllianceKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry, app.GetSubspace(alliancemoduletypes.ModuleName)),
+		// alliancemodule.NewAppModule(appCodec, app.AllianceKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry, app.GetSubspace(alliancemoduletypes.ModuleName)),
 	)
 
 	app.sm.RegisterStoreDecoders()
@@ -959,7 +959,7 @@ func (app *App) ModuleAccountAddrs() map[string]bool {
 func (app *App) BlockedModuleAccountAddrs() map[string]bool {
 	modAccAddrs := app.ModuleAccountAddrs()
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-	delete(modAccAddrs, authtypes.NewModuleAddress(alliancemoduletypes.ModuleName).String())
+	// delete(modAccAddrs, authtypes.NewModuleAddress(alliancemoduletypes.ModuleName).String())
 
 	return modAccAddrs
 }
@@ -1094,7 +1094,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(wasmtypes.ModuleName).WithKeyTable(wasmtypes.ParamKeyTable()) //nolint:staticcheck
 	paramsKeeper.Subspace(feeburnmoduletypes.ModuleName)
-	paramsKeeper.Subspace(alliancemoduletypes.ModuleName).WithKeyTable(alliancemoduletypes.ParamKeyTable()) //nolint:staticcheck
+	// paramsKeeper.Subspace(alliancemoduletypes.ModuleName).WithKeyTable(alliancemoduletypes.ParamKeyTable()) //nolint:staticcheck
 	return paramsKeeper
 }
 
